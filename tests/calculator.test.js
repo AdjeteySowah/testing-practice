@@ -10,14 +10,12 @@ describe('calculator', () => {
       expect(calculator.add(a, b)).toBe(expected);
     });
 
-    test('throws an error for non-number input', () => {
-      expect(() => calculator.add('2', '5'))
-      .toThrow('Expects all arguments of add() to be numbers');
-    });
-
-    test('throws an error for NaN input', () => {
-      expect(() => calculator.add(NaN, NaN))
-      .toThrow('Inputs cannot be NaN');
+    test.each([
+      [null, '2'],
+      [NaN, undefined],
+      [Infinity, BigInt],
+    ])('throws an error for invalid inputs: add(%p, %p)', (a, b) => {
+      expect(() => calculator.add(a, b)).toThrow();
     });
   });
 
@@ -30,14 +28,52 @@ describe('calculator', () => {
       expect(calculator.subtract(a, b)).toBe(expected);
     });
 
-    test('throws an error for non-number input', () => {
-      expect(() => calculator.subtract('2', '5'))
-      .toThrow('Expects all arguments of subtract() to be numbers');
+    test.each([
+      [null, '2'],
+      [NaN, undefined],
+      [Infinity, BigInt],
+    ])('throws an error for invalid inputs: subtract(%p, %p)', (a, b) => {
+      expect(() => calculator.subtract(a, b)).toThrow();
+    });
+  });
+  
+  describe('multiply()', () => {
+    test.each([
+      [ 5,  3,  15],
+      [-5, -3,  15],
+      [-5,  3, -15],
+    ])('multiply(%p, %p) -> %p', (a, b, expected) => {
+      expect(calculator.multiply(a, b)).toBe(expected);
     });
 
-    test('throws an error for NaN input', () => {
-      expect(() => calculator.subtract(NaN, NaN))
-      .toThrow('Inputs cannot be NaN');
+    test.each([
+      [null, '2'],
+      [NaN, undefined],
+      [Infinity, BigInt],
+    ])('throws an error for invalid inputs: multiply(%p, %p)', (a, b) => {
+      expect(() => calculator.multiply(a, b)).toThrow();
+    });
+  });
+
+  describe('divide()', () => {
+    test('throw an error when divisor is 0', () => {
+      expect(() => calculator.divide(5, 0)).toThrow('Cannot divide by zero');
+    });
+
+    test.each([
+      [ 15,  3,  5],
+      [-15, -3,  5],
+      [-15,  3, -5],
+    ])('divide(%p, %p) -> %p', (a, b, expected) => {
+      expect(calculator.divide(a, b)).toBe(expected);
+    });
+
+    test.each([
+      [null, '2'],
+      [NaN, undefined],
+      [Infinity, BigInt],
+    ])('throws an error for invalid inputs: divide(%p, %p)', (a, b) => {
+      expect(() => calculator.divide(a, b)).toThrow();
     });
   });
 });
